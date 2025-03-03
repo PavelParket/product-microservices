@@ -28,7 +28,7 @@ public class OrderService {
 
     private final OrderLineItemsMapper orderLineItemsMapper;
 
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
 
     public OrderResponse create(OrderRequest orderRequest) {
         Order order = Order.builder()
@@ -42,8 +42,8 @@ public class OrderService {
                 .map(OrderLineItems::getSkuCode)
                 .toList();
 
-        InventoryResponse[] response = webClient.get()
-                .uri("http://localhost:8082/api/inventory",
+        InventoryResponse[] response = webClientBuilder.build().get()
+                .uri("http://InventoryApplication/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)
